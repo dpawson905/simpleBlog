@@ -15,7 +15,8 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const MongoDBStore = require('connect-mongo')(session);
 const sassMiddleware = require('node-sass-middleware');
-;
+
+const PORT = process.env.port || 4000;
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -129,4 +130,6 @@ app.use(function (err, req, res, next) {
   res.redirect('back');
 });
 
-module.exports = app;
+app.listen(PORT, function() {
+  debug('Customers!');
+});
