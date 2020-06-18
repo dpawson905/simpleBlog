@@ -1,0 +1,23 @@
+<div class="header-img">
+  <div class="hero-text-box">
+    
+    <% if (url == 'home') { %>
+      <h1 class="typed"></h1>
+      <div class="scroll-downs">
+        <div class="mousey">
+          <div class="scroller"></div>
+        </div>
+      </div>
+    <% } else { %>
+      <h1 class="">Welcome to <span class="h2"><%= title %></span></h1>
+    <% } %>
+  </div>
+</div>
+<script>
+  new Typed('.typed', {
+    strings: [`Welcome to SimpleBlog`],
+    typeSpeed: 60,
+    startDelay: 100,
+    contentType: 'html'
+  });
+</script>

@@ -1,0 +1,41 @@
+<% if(error && error.length){ %>
+  <div class="toast message shadow animated bounceInRight" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+    <div class="toast-header error">
+      <i class="fas fa-bug"></i>&nbsp;
+      <strong class="mr-auto">SimpleBlog</strong>
+      <small></small>
+      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="toast-body text-danger">
+      <%- error %>
+    </div>
+  </div>
+  <script>
+    $(document).ready(function(){
+      $('.toast').toast('show');
+    });
+  </script>
+<% } %>
+
+<% if(success && success.length){ %>
+  <div class="toast message shadow animated bounceInRight" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+    <div class="toast-header success">
+      <i class="fas fa-thumbs-up"></i>&nbsp;
+      <strong class="mr-auto">SimpleBlog</strong>
+      <small></small>
+      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="toast-body text-success">
+      <%- success %>
+    </div>
+  </div>
+  <script>
+    $(document).ready(function(){
+      $('.toast').toast('show');
+    });
+  </script>
+<% } %>

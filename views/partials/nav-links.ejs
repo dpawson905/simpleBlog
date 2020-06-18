@@ -1,0 +1,36 @@
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+  <ul class="navbar-nav mr-auto">
+    <li class="nav-item">
+      <a class="nav-link <%= typeof url !== 'undefined' && url === 'home' ? 'active animated bounce' : '' %>" href="/">Home</a>
+    </li>
+  <% if(currentUser && isAuthenticated) { %>
+    <li class="nav-item">
+      <a class="nav-link <%= typeof url !== 'undefined' && url === 'blogs' ? 'active animated bounce' : '' %>" href="/blogs">View Your Blogs</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link <%= typeof url !== 'undefined' && url === 'new' ? 'active animated bounce' : '' %>" href="/blogs/new-blog">New Blog</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link <%= typeof url !== 'undefined' && url === 'profile' ? 'active animated bounce' : '' %>" href="/users/user/<%= currentUser._id %>">
+        <img class="small-img img-fluid" src="<%= currentUser.image.secure_url %>" alt="<%= currentUser.username %>"> Profile
+      </a>
+    </li>
+  </ul>
+  <ul class="navbar-nav ml-auto">
+    <li class="nav-item">
+      <a class="nav-link active" href="/users/logout">Logout</a>
+    </li>
+  </ul>
+  <% } else { %>
+  <li class="nav-item">
+    <a class="nav-link <%= typeof url !== 'undefined' && url === 'register' ? 'active animated bounce' : '' %>" href="/users/register">Register</a>
+  </li>
+  </ul>
+  <% if (url != 'register') { %>
+    <div class="">
+      <button class="btn btn-outline-success mr-2" data-toggle="modal" data-target="#loginModal" type="submit">Login</button>
+      <button class="btn btn-outline-info" data-toggle="modal" data-target="#forgotPwModal" type="submit">Forgot Password</button>
+    </div>
+  <% } %>
+  <% } %>
+</div>

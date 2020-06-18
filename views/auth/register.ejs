@@ -1,0 +1,70 @@
+<%- include ('../partials/header') %>
+  <%- include ('../partials/hero') %>
+  <main class="p-5 mb-5">
+    <div class="container-fluid card p-3 shadow mb-5">
+      <div class="row">
+        <div class="col-12">
+          <h2 class="text-center">Enter your information below to create an account.</h2>
+          <form action="/users/register" method="post"  enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="firstName">First Name</label>
+                  <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter First Name" value="<%= userInfo.firstName %>">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="lastName">Last Name</label>
+                  <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter Last Name" value="<%= userInfo.lastName %>">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="email">Email Address</label>
+                  <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email Address" value="<%= userInfo.email %>">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="username">Username</label>
+                  <input type="text" class="form-control" id="username" name="username" placeholder="Enter Username" value="<%= userInfo.username %>">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-2">
+                <div class="form-group mb-2">
+                  <label for="password">Password</label>
+                  <input type="password" class="form-control" id="password" name="password" aria-describedby="password" placeholder="Enter Password">
+                </div>
+              </div>
+              <div class="col-md-6 mb-2">
+                <div class="form-group mb-2">
+                  <label for="password2">Confirm Password</label>
+                  <input type="password" class="form-control" id="password2" name="password2" aria-describedby="password2" placeholder="Confirm Password">
+                  <div><small id="checkPw"></small></div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6 offset-3 text-center">
+                
+                <button id="registerButton" type="submit" class="btn btn-primary btn-block mt-3" disabled>Register</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script>
+    $(document).ready(function(){
+      $(this).scrollTop(1000);
+      
+    });
+  </script>
+  
+<%- include ('../partials/footer') %>
