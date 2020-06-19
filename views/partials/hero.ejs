@@ -2,7 +2,7 @@
   <div class="hero-text-box">
     
     <% if (url == 'home') { %>
-      <h1 class="typed"></h1>
+      <h1 class="typed"><span class="typed-w"></span></h1>
       <div class="scroll-downs">
         <div class="mousey">
           <div class="scroller"></div>
@@ -14,8 +14,8 @@
   </div>
 </div>
 <script>
-  new Typed('.typed', {
-    strings: [`Welcome to SimpleBlog`],
+  new Typed('.typed-w', {
+    strings: ['Welcome to SimpleBlog'],
     typeSpeed: 60,
     startDelay: 100,
     contentType: 'html'

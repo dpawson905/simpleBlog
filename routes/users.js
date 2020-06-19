@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const { storage } = require('../cloudinary');
 const upload = multer({ storage });
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 const {
   getStarted,

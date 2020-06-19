@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const passportLocalMongoose = require("passport-local-mongoose");
 const Schema = mongoose.Schema;
+const Blog = require('./blog');
 
 const UserSchema = new Schema(
   {
@@ -70,6 +71,12 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    blogs: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Blog'
+      }
+    ]
   },
   { timestamps: true }
 );

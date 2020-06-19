@@ -15,10 +15,13 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const MongoDBStore = require('connect-mongo')(session);
 const sassMiddleware = require('node-sass-middleware');
+const cors = require('cors');
+const expressSanitizer = require("express-sanitizer");
 
 const PORT = process.env.port || 4000;
 
 const indexRouter = require('./routes/index');
+const blogRouter = require('./routes/blog');
 const usersRouter = require('./routes/users');
 
 const User = require('./models/user');
@@ -46,15 +49,11 @@ app.use(compression());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-var rawBodySaver = function (req, res, buf, encoding) {
-  if (buf && buf.length) {
-    req.rawBody = buf.toString(encoding || 'utf8');
-  }
-};
-
 app.use(logger('dev'));
-app.use(express.json({verify: rawBodySaver}));
-app.use(express.urlencoded({ verify:rawBodySaver, extended: true }));
+app.use(expressSanitizer());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use(cookieParser());
 
 app.use(methodOverride('_method'));
@@ -85,14 +84,7 @@ if (app.get('env') === 'production') {
 }
 
 app.use(flash());
-app.use(helmet({
-  hidePoweredBy: true,
-  frameguard: 'SAMEORIGIN',
-  xssFilter: {
-    setOnOldIE: true
-  },
-  noSniff: true
-}));
+app.use(helmet());
 app.use(session(sess));
 
 
@@ -114,6 +106,7 @@ app.use(async (req, res, next) => {
 });
 
 app.use('/', indexRouter);
+app.use('/:username', blogRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and display message to user

@@ -1,0 +1,96 @@
+<%- include ('../partials/header') %>
+  <div class="profile-hero">
+    <div class="hero-text-box-2">        
+      <h1><%= title %> &mdash;<span class="h2">New Blog</span></h1>
+    </div>
+  </div>
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-9">
+          <form action="">
+            <label for="markdownArea">Body</label>
+            <textarea class="form-control" id="markdownArea" rows="15" name="content"></textarea>
+          </form>
+        </div>
+        <div class="col-lg-3">
+          <div class="row">
+            <div class="col-md-6 col-lg-12">
+              <div class="form-group">
+                <label for="title">Title</label>
+                <input class="form-control" type="text" id="title" name="title" placeholder="Blog Title" value="">
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-12">
+              <div class="form-group">
+                <label for="tags">Tags</label>
+                <input type="text" class="bootstrap-tagsinput form-control" id="tags" name="tags" aria-describedby="tags" data-role="tagsinput" required>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-12">
+              <div class="form-group">
+                <label for="publishDate">Publish Date</label>
+                <input type="text" class="form-control" id="publishDate" name="publishDate" value="">
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-12">
+              <div class="form-group mx-auto my-auto">
+                <label for="image">Header Image</label>
+                <input type="file" class="form-control-file" id="image" name="image">
+              </div>
+            </div>
+            <div class="col-md-3 col-lg-12">
+              <div class="form-group form-check form-check-inline">
+                <input type="checkbox" class="form-check-input" id="featured" name="featured">
+                <label class="form-check-label" for="featured">Feature Post?</label>
+              </div>
+            </div>
+            <div class="col-md-3 col-lg-12">
+              <div class="form-group form-check form-check-inline">
+                <input type="checkbox" class="form-check-input" id="private" name="private">
+                <label class="form-check-label" for="private">Private Post?</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row text-center">
+        <div class="col-6 offset-3">
+          <button class="btn btn-primary btn-block my-3">Create Blog</button>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <%- include ('../partials/footer') %>
+  <script>
+    var today1 = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+    $('#publishDate').datepicker({
+      uiLibrary: 'bootstrap4',
+      minDate: today1,
+      maxDate: function() {
+        var date1 = new Date();
+        date1.setDate(date1.getDate() + 30);
+        return new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
+      },
+      iconsLibrary: 'fontawesome'
+    });
+  </script>
+  <script>
+    var simplemde = new SimpleMDE({
+      autoDownloadFontAwesome: false,
+      element: document.getElementById("markdownArea"),
+      showIcons: ["code", "heading-2", "heading-3"],
+      placeholder: 'Begin your blog here!',
+      renderingConfig: {
+        singleLineBreaks: true,
+        codeSyntaxHighlighting: true
+      },
+      shortcuts: {
+        "toggleBlockquote": "Ctrl-Alt--"
+      },
+      hideIcons: ['quote']
+    });
+  </script>
+  </body>
+</html>
