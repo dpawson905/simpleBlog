@@ -5,13 +5,13 @@
     </li>
   <% if(currentUser && isAuthenticated) { %>
     <li class="nav-item">
-      <a class="nav-link <%= typeof url !== 'undefined' && url === 'blogs' ? 'active animated bounce' : '' %>" href="/blogs">View Your Blogs</a>
+      <a class="nav-link <%= typeof url !== 'undefined' && url === 'blogs' ? 'active animated bounce' : '' %>" href="/<%= currentUser.username %>/blogs">View Your Blogs</a>
     </li>
     <li class="nav-item">
       <a class="nav-link <%= typeof url !== 'undefined' && url === 'new' ? 'active animated bounce' : '' %>" href="/<%= currentUser.username %>/new-blog">New Blog</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link <%= typeof url !== 'undefined' && url === 'profile' ? 'active animated bounce' : '' %>" href="/users/user/<%= currentUser._id %>">
+      <a class="nav-link <%= typeof url !== 'undefined' && url === 'profile' ? 'active animated bounce' : '' %>" href="/users/user/<%= currentUser.username %>">
         <img class="small-img img-fluid" src="<%= currentUser.image.secure_url %>" alt="<%= currentUser.username %>"> Profile
       </a>
     </li>

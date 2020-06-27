@@ -10,9 +10,13 @@ const {
 } = require('../middleware');
 
 const {
+  getBlogs,
   getNewBlog,
   postNewBlog
 } = require('../controllers/blog');
+
+/* Get blogs */
+router.get('/blogs', isLoggedIn, asyncErrorHandler(getBlogs));
 
 /* GET new blog. */
 router.get('/new-blog', isLoggedIn, getNewBlog);

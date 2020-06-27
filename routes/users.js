@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const { storage } = require('../cloudinary');
 const upload = multer({ storage });
-const router = express.Router({ mergeParams: true });
+const router = express.Router({  });
 
 const {
   getStarted,
@@ -57,13 +57,13 @@ router.post('/login', isAuthenticated, asyncErrorHandler(postLogin));
 router.get('/logout', isNotAuthenticated, logOut);
 
 /* GET user profile */
-router.get('/user/:id', isNotAuthenticated, asyncErrorHandler(getProfile));
+router.get('/user/:username', isNotAuthenticated, asyncErrorHandler(getProfile));
 
 /* PUT edit profile */
-router.put('/user/:id', upload.single('image'), isNotAuthenticated, asyncErrorHandler(putEditProfile));
+router.put('/user/:username', upload.single('image'), isNotAuthenticated, asyncErrorHandler(putEditProfile));
 
 /* PUT Change PW */
-router.put('/user/:id/pw-change', isNotAuthenticated, asyncErrorHandler(changePassword));
+router.put('/user/:username/pw-change', isNotAuthenticated, asyncErrorHandler(changePassword));
 
 /* post forgot password email */
 router.post('/forgot', isAuthenticated, asyncErrorHandler(forgotPasswordEmail));

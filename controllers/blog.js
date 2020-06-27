@@ -21,6 +21,25 @@ const converter = new showdown.Converter({
 });
 
 module.exports = {
+  async getBlogs(req, res, next) {
+    // const user = await User.find().populate('followers').exec();    
+    const blogs = await Blog.find({ 
+      author: {
+        $eq: req.user._id,
+        // $in: user[0].followers,
+      },
+      publishDate: {
+        $lte: Date.now()
+      }
+    });
+    res.render('blogs/index', {
+      blogs,
+      subTitle: '- Your Blogs',
+      entities,
+      converter
+    });
+  },
+
   getNewBlog(req, res, next) {
     res.render('blogs/new');
   },
