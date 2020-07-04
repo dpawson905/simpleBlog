@@ -11,19 +11,19 @@
       <a class="nav-link <%= typeof url !== 'undefined' && url === 'new' ? 'active animated bounce' : '' %>" href="/<%= currentUser.username %>/new-blog">New Blog</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link <%= typeof url !== 'undefined' && url === 'profile' ? 'active animated bounce' : '' %>" href="/users/user/<%= currentUser.username %>">
+      <a class="nav-link <%= typeof url !== 'undefined' && url === 'profile' ? 'active animated bounce' : '' %>" href="/users/profile/<%= currentUser.username %>">
         <img class="small-img img-fluid" src="<%= currentUser.image.secure_url %>" alt="<%= currentUser.username %>"> Profile
       </a>
     </li>
   </ul>
   <ul class="navbar-nav ml-auto">
     <li class="nav-item">
-      <a class="nav-link active" href="/users/logout">Logout</a>
+      <a class="nav-link active" href="/auth/logout">Logout</a>
     </li>
   </ul>
   <% } else { %>
   <li class="nav-item">
-    <a class="nav-link <%= typeof url !== 'undefined' && url === 'register' ? 'active animated bounce' : '' %>" href="/users/register">Register</a>
+    <a class="nav-link <%= typeof url !== 'undefined' && url === 'register' ? 'active animated bounce' : '' %>" href="/auth/register">Register</a>
   </li>
   </ul>
   <% if (url != 'register') { %>

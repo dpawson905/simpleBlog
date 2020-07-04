@@ -1,6 +1,6 @@
-require('dotenv').config();
+require('dotenv').config()
 
-const debug = require('debug')('simpleblog:app');
+const debug = require('debug')('newsimpleblog:app');
 const createError = require('http-errors');
 const compression = require('compression');
 const express = require('express');
@@ -15,16 +15,15 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const MongoDBStore = require('connect-mongo')(session);
 const sassMiddleware = require('node-sass-middleware');
-const cors = require('cors');
 const expressSanitizer = require("express-sanitizer");
 
-const PORT = process.env.port || 4000;
-
-const indexRouter = require('./routes/index');
+const authRouter = require('./routes/auth');
 const blogRouter = require('./routes/blog');
+const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
 const User = require('./models/user');
+const Permission = require('./models/permission');
 
 // Connect to db
 mongoose.connect(process.env.DB_URL, {
@@ -41,7 +40,6 @@ mongoose.connect(process.env.DB_URL, {
 /* Set this for debbuging purposes only!!! */
 //mongoose.set('debug', true);
 
-
 const app = express();
 app.use(compression());
 
@@ -49,14 +47,14 @@ app.use(compression());
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(logger('dev'));
+app.locals.moment = require('moment');
+
 app.use(expressSanitizer());
+app.use(methodOverride('_method'));
+app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(cookieParser());
-
-app.use(methodOverride('_method'));
 app.use(sassMiddleware({
   src: path.join(__dirname, 'public'),
   dest: path.join(__dirname, 'public'),
@@ -64,7 +62,6 @@ app.use(sassMiddleware({
   sourceMap: true
 }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.locals.moment = require('moment');
 
 const sess = {
   secret: process.env.COOKIE_SECRET,
@@ -87,10 +84,8 @@ app.use(flash());
 app.use(helmet());
 app.use(session(sess));
 
-
 app.use(passport.initialize());
 app.use(passport.session());
-
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -105,24 +100,34 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.use('/', indexRouter);
-app.use('/:username', blogRouter);
-app.use('/users', usersRouter);
-
-// catch 404 and display message to user
-app.use(function(req, res, next) {
-  req.flash('error', 'That page does not exist.');
-  res.redirect('back');
+app.use(async function(err, req, res, next) {
+  
+  debug('Calling next')
   next();
 });
 
+app.use('/auth', authRouter);
+app.use('/blog', blogRouter);
+app.use('/users', usersRouter);
+app.use('/', indexRouter);
+
 // error handler
-app.use(function (err, req, res, next) {
-  debug(err.stack);
-  req.flash('error', err.message);
-  res.redirect('back');
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  debug(err)
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
 });
 
-app.listen(PORT, function() {
-  debug('Customers!');
-});
+(async () => {
+  const permission = await Permission.find({});
+  if (!permission.length) {
+    await Permission.create({});
+  }
+})();
+
+module.exports = app;

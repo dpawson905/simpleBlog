@@ -1,95 +1,62 @@
-var debug = require('debug')('simpleblog:auth');
+const debug = require("debug")("newsimpleblog:auth");
 const passport = require("passport");
-const sgMail = require("@sendgrid/mail");
 const crypto = require("crypto");
 const util = require("util");
 const { cloudinary } = require("../cloudinary");
 const { deleteProfileImage } = require("../middleware");
-
-const kickbox = require('kickbox').client(process.env.KICKBOX_API_KEY).kickbox();
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const User = require("../models/user");
 const Token = require("../models/token");
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
 module.exports = {
-  async getStarted(req, res, next) {
-    const userCheck = "noUser";
-    if (req.user) {
-      res.redirect("/blogs");
-    } else {
-      res.render("index", {
-        userCheck,
-        url: "home"
-      });
-    }
-  },
-
   getRegister(req, res, next) {
     res.render("auth/register", {
-      subTitle: "- Register",
       url: "register",
       userInfo: {
         firstName: "",
         lastName: "",
         email: "",
-        username: ""
-      }
+        username: "",
+      },
     });
   },
 
-  async postRegisterUser(req, res, next) {
-    const userInfo = req.body;
+  async postRegister(req, res, next) {
     try {
-      await kickbox.verify(req.body.email, async(err, response) => {
-        debug(response.body.result)
-        if(err) {
-          req.flash('error', err.message);
-          return res.redirect('/users/register');
-        }
-        if (response.body.result !== 'deliverable') {
-          req.flash('error', 'This is not a valid email account. Registration terminated!')
-          return res.redirect('/users/register');
-        }
-        const newUser = new User({
-          firstName: userInfo.firstName,
-          lastName: userInfo.lastName,
-          email: userInfo.email,
-          username: userInfo.username,
-          expiresDateCheck: Date.now(),
-          isVerified: false
-        });
-        delete userInfo.password2;
-        const user = await User.register(newUser, userInfo.password);
-        const userToken = new Token({
-          _userId: user._id,
-          token: crypto.randomBytes(256).toString("hex")
-        });
-        await userToken.save();
-        const msg = {
-          from: "Darrell Pawson <darrell@djpawson.me>",
-          to: user.email,
-          subject: `Welcome to SimpleBlog ${
-            user.firstName
-          } - Validate your account!`,
-          html: `
+      const userInfo = req.body;
+      const newUser = new User({
+        firstName: userInfo.firstName,
+        lastName: userInfo.lastName,
+        email: userInfo.email,
+        username: userInfo.username,
+        expiresDateCheck: Date.now(),
+        isVerified: false,
+      });
+      delete userInfo.password2;
+      const user = await User.register(newUser, userInfo.password);
+      const userToken = new Token({
+        _userId: user._id,
+        token: crypto.randomBytes(256).toString("hex"),
+      });
+      await userToken.save();
+      const msg = {
+        from: "Darrell Pawson <darrell@djpawson.me>",
+        to: user.email,
+        subject: `Welcome to SimpleBlog ${user.firstName} - Validate your account!`,
+        html: `
                 <h1>Hey There</h1>
                 <p>It looks like you have registered for an account on our site, please click the link below to validate your account.</p>
-                <p><a href="http://${
-                  req.headers.host
-                }/users/validate-account?token=${
-            userToken.token
-          }">Validate your account</a></p>
-              `
-        };
-        await sgMail.send(msg);
-        req.flash(
-          "success",
-          "Thanks for registering, Please check your email to verify your account."
-        );
-        return res.redirect("/");
-      });
+                <p><a href="http://${req.headers.host}/auth/validate-account?token=${userToken.token}">Validate your account</a></p>
+              `,
+      };
+      await sgMail.send(msg);
+      req.flash(
+        "success",
+        "Thanks for registering, Please check your email to verify your account."
+      );
+      return res.redirect("/");
     } catch (err) {
       if (err.name === "MongoError" && err.code === 11000) {
         deleteProfileImage(req);
@@ -97,8 +64,7 @@ module.exports = {
         return res.render("auth/register", {
           error,
           userInfo,
-          subTitle: "- Register",
-          url: "register"
+          url: "register",
         });
       } else {
         deleteProfileImage(req);
@@ -107,8 +73,7 @@ module.exports = {
         return res.render("auth/register", {
           error,
           userInfo,
-          subTitle: "- Register",
-          url: "register"
+          url: "register",
         });
       }
     }
@@ -138,7 +103,7 @@ module.exports = {
     await token.remove();
     /* req.flash('success', 'Your account is now valid.');
     res.redirect('/'); */
-    await req.login(user, err => {
+    await req.login(user, (err) => {
       if (err) return next(err);
       req.flash("success", `Welcome to SimpleBlog ${user.username}`);
       const redirectUrl = req.session.redirectTo || "/";
@@ -150,10 +115,10 @@ module.exports = {
   getNewToken(req, res, next) {
     res.render("auth/newToken", {
       userInfo: {
-        email: ""
+        email: "",
       },
       title: "Resend Token",
-      subTitle: ""
+      subTitle: "",
     });
   },
 
@@ -170,7 +135,7 @@ module.exports = {
     }
     const userToken = new Token({
       _userId: user._id,
-      token: crypto.randomBytes(256).toString("hex")
+      token: crypto.randomBytes(256).toString("hex"),
     });
     await userToken.save();
     const msg = {
@@ -180,12 +145,8 @@ module.exports = {
       html: `
             <h1>Hey There</h1>
             <p>It looks like you have registered for an account on our site, please click the link below to validate your account.</p>
-            <p><a href="http://${
-              req.headers.host
-            }/users/validate-account?token=${
-        userToken.token
-      }">Validate your account</a></p>
-          `
+            <p><a href="http://${req.headers.host}/auth/validate-account?token=${userToken.token}">Validate your account</a></p>
+          `,
     };
     await sgMail.send(msg);
     req.flash(
@@ -215,13 +176,13 @@ module.exports = {
       successRedirect: "/",
       failureRedirect: "/",
       successFlash: `Welcome back ${user.username}`,
-      failureFlash: true
+      failureFlash: true,
     })(req, res, next);
   },
 
   async changePassword(req, res, next) {
     const user = await User.findById(req.user.id);
-    await user.setPassword(req.body.password, async err => {
+    await user.setPassword(req.body.password, async (err) => {
       if (err) {
         req.flash("error", err.message);
         return res.redirect("back");
@@ -239,7 +200,7 @@ module.exports = {
     if (user) {
       const userToken = new Token({
         _userId: user._id,
-        token: crypto.randomBytes(256).toString("hex")
+        token: crypto.randomBytes(256).toString("hex"),
       });
       await userToken.save();
       const msg = {
@@ -250,10 +211,8 @@ module.exports = {
               <h1>Hey There</h1>
               <p>It looks like you have forgotten your password, please click the link below to validate your account.</p>
               <p>If this was not you then please reply to this message so we can look into it.</p>
-              <p><a href="http://${req.headers.host}/users/reset?token=${
-          userToken.token
-        }&username=${user.username}">Reset your password</a></p>
-            `
+              <p><a href="http://${req.headers.host}/auth/reset?token=${userToken.token}&username=${user.username}">Reset your password</a></p>
+            `,
       };
       await sgMail.send(msg);
     }
@@ -274,7 +233,7 @@ module.exports = {
         username,
         title: "Forgot Password",
         subTitle: "",
-        url: ""
+        url: "",
       });
     } else {
       req.flash(
@@ -288,7 +247,7 @@ module.exports = {
   async postForgotPassword(req, res, next) {
     const user = await User.findOne({ username: req.body.username });
 
-    await user.setPassword(req.body.password, async err => {
+    await user.setPassword(req.body.password, async (err) => {
       if (err) {
         req.flash("error", err.message);
         return res.redirect("back");
@@ -306,7 +265,7 @@ module.exports = {
               <p>It looks like your password was changed.</p>
               <p>If this was not you then please reply to this message so we can look into it.</p>
               <p>Thanks... Admin</p>
-            `
+            `,
       };
       await sgMail.send(msg);
       req.flash(

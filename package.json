@@ -1,11 +1,11 @@
 {
-  "name": "simpleblog",
+  "name": "newsimpleblog",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node app.js",
-    "dev": "DEBUG=simpleblog:* nodemon",
-    "dev-win": "set DEBUG=simpleblog:* & nodemon"
+    "start": "node ./bin/www",
+    "dev": "DEBUG=newsimpleblog:* nodemon",
+    "dev-win": "set DEBUG=newsimpleblog:* & nodemon"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
@@ -27,12 +27,12 @@
     "helmet": "^3.23.3",
     "highlight.js": "^10.1.1",
     "html-entities": "^1.3.1",
-    "http-errors": "~1.7.3",
+    "http-errors": "~1.8.0",
     "kickbox": "^2.0.4",
     "lodash": "^4.17.15",
     "method-override": "^3.0.0",
     "moment": "^2.27.0",
-    "mongoose": "^5.9.20",
+    "mongoose": "^5.9.21",
     "mongoose-paginate": "^5.0.3",
     "morgan": "~1.10.0",
     "multer": "==1.4.1",

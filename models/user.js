@@ -81,6 +81,11 @@ const UserSchema = new Schema(
   { timestamps: true }
 );
 
+UserSchema.pre('find', function(next) {
+  this.populate('blogs');
+  next();
+});
+
 UserSchema.plugin(passportLocalMongoose, {
   limitAttempts: true,
   interval: 100,

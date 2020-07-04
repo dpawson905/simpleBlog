@@ -2,14 +2,18 @@ const express = require('express');
 const router = express.Router();
 
 const {
-  isLoggedIn
+  asyncErrorHandler
 } = require('../middleware');
 
 const {
-  getIndex
-} = require('../controllers');
+  index
+} = require('../controllers/index');
 
 /* GET home page. */
-router.get('/', getIndex);
+router.get('/', asyncErrorHandler(index));
+
+router.all('*', (req, res, next) => {
+  return res.render('404');
+});
 
 module.exports = router;
